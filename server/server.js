@@ -5,8 +5,8 @@ const db = require('./config/connection');
 const { typeDefs,resolvers } = require('./schemas');
 const routes = require('./routes');
 //import ApolloServer
-const { ApolooServer } = require('apollo-server-express');
-const { authMiddleware } = require('.utils/auth');
+const { ApolloServer } = require('apollo-server-express');
+const { authMiddleware } = require('./utils/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -18,7 +18,11 @@ const server = new ApolloServer({
   context: authMiddleware
 });
 
-// incorporate middleWare
+const start = async ()=> { 
+  
+  await server.start();
+
+// incorporate middleWare server with express server
 server.applyMiddleware({app});
 
 app.use(express.urlencoded({ extended: true }));
@@ -34,3 +38,7 @@ app.use(routes);
 db.once('open', () => {
   app.listen(PORT, () => console.log(`🌍 Now listening on localhost:${PORT}`));
 });
+
+};
+
+start();
